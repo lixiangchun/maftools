@@ -75,7 +75,13 @@ readGistic = function(gisticAllLesionsFile, gisticAmpGenesFile = NULL, gisticDel
       delGenes = delGenes[,1:c(ncol(delGenes)-1), with = FALSE]
     }
 
-    delGenes = suppressWarnings(data.table::melt(delGenes, id.vars = 'cytoband'))
+    #delGenes = suppressWarnings(data.table::melt(delGenes, id.vars = 'cytoband')) ## Bug: https://github.com/PoisonAlien/maftools/issues/22
+	##---------- added by Li Xiangchun ---------------#######
+	data.table::setDF(delGenes)
+    delGenes = reshape2::melt(delGenes, id.vars = 'cytoband')
+	data.table::setDT(delGenes)
+	##-------------------------------------#######
+
     delGenes = delGenes[!value %in% '']
     #delGenes$value = sapply(strsplit(x = delGenes$value, split = '|', fixed = TRUE), '[', 1)
     delGenes = delGenes[!grep(pattern = '|', x = delGenes$value, fixed = TRUE)]
